@@ -1,0 +1,52 @@
+﻿@model Bundles.Models.Customer
+@{
+    ViewBag.Title = "Add customer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ajaxOpts = new AjaxOptions {
+        OnSuccess = "processResponse"
+    };
+}
+@section Scripts {
+    <script type="text/javascript">
+
+        function switchViews() {
+            $(".hidden, .visible").toggleClass("hidden visible");
+        }
+
+        function processResponse(customer) {
+            $('#successCustomertName').text(customer.Name);
+            switchViews();
+        }
+
+        $(document).ready(function () {
+            $('#backButton').click(function (e) {
+                switchViews();
+            });
+        });
+
+    </script>
+}
+@section Body {
+    <div id="formDiv" class="visible well">
+        @using (Ajax.BeginForm(ajaxOpts)) {
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <label for="Name">Your name:</label>
+                <p>@Html.ValidationMessageFor(m => m.Name)</p>
+                @Html.TextBoxFor(m => m.Name, new {@class = "form-control" })
+            </div>
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(m => m.Over18)
+                    I am over 18 years old
+                </label>
+            </div>
+            <input type="submit" value="Add customer" class="btn btn-primary"/>
+        }
+    </div>
+    <div id="successDiv" class="hidden well">
+        <h4 class="lead">You have been added to the database</h4>
+        <p>Welcome: <b id="successCustomertName"></b></p>
+        <button id="backButton" class="btn btn-primary">Back</button>
+    </div>
+}
